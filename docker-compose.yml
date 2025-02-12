@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_DB: amicred_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: amicred
+    ports:
+      - "5433:5432"
+
+  flyway:
+    image: flyway/flyway
+    container_name: flyway
+    depends_on:
+      - postgres
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/amicred_db
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: amicred
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+
+  amicred-app:
+    build: .
+    container_name: amicred-app
+    ports:
+      - "8080:8082"
+      - "5005:5005"
+    depends_on:
+      - postgres
+      - flyway
+    environment:
+      JDBC_DATABASE_URL: jdbc:postgresql://postgres:5432/amicred_db
+      JDBC_DATABASE_USERNAME: postgres
+      JDBC_DATABASE_PASSWORD: amicred
+      ENV_FILE: docker
+      ENV_PATH: /app/env
