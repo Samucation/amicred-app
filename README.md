@@ -14,7 +14,7 @@ será executada. ( Modo de produção ) Abaixo existe a aplicação para rodar e
 - de um container docker, nesses casos você precisará de poucos passos para rodar a aplicação.
 - - Com o docker instalado na sua máquina windows ou linux rodar o seguinte comando na raiz do projeto:
 - - ```docker composer up ``` Se tudo ser certo a aplicação será configurada automáticamente pelo docker:
-- - Acesse a url **http://localhost:8083/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
+- - Acesse a url **http://localhost:8080/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
 
 
 - ### **Usar a aplicação localmente para desenvolvimento sem docker:** ###
@@ -26,7 +26,6 @@ será executada. ( Modo de produção ) Abaixo existe a aplicação para rodar e
 ```
 docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=amicred -p 5432:5432 --name postgres-amicred postgres
 ```
-
 
 - **Inserindo variáveis de ambiente, definindo o ambiente local de desenvolvimento**
 - A aplicação sempre irá procurar no seu arquivo application.class ( **AmicredApplication** ) qual é o ambiente
