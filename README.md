@@ -6,7 +6,7 @@ A aplicação está previamente configurada para rodar localmente como também v
 ambiente será necessário o manuseio e criação de algumas variáveis de ambiente, podendo ser que essas variáveis
 sejam criadas no próprio intellij "Em contextos aonde você está rodando local e sem dockerizar a aplicão
 ( contexto de desenvolvimento ) ou setando as enviroments diretamente no sistema operacional ou cloud que a aplicação
-será executada. ( Modo de produção ) Abaixo existe a aplicação para rodar em todos os ambientes."
+será executada. ( Modo de produção ) Abaixo existe a explicação para rodar em todos os ambientes."
 
 ### **01 - Rodando a aplicação inteira via docker:** ###
 
