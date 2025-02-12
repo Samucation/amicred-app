@@ -8,7 +8,7 @@ sejam criadas no próprio intellij "Em contextos aonde você está rodando local
 ( contexto de desenvolvimento ) ou setando as enviroments diretamente no sistema operacional ou cloud que a aplicação
 será executada. ( Modo de produção ) Abaixo existe a aplicação para rodar em todos os ambientes."
 
-- ### **Rodando a aplicação inteira via docker:** ###
+### **01 - Rodando a aplicação inteira via docker:** ###
 
 - Caso queira rodar a aplicação apenas para testes é possível rodar ele totalmente via docker, ou seja o banco de dados e a aplicação estarão dentro
 - de um container docker, nesses casos você precisará de poucos passos para rodar a aplicação.
@@ -16,8 +16,7 @@ será executada. ( Modo de produção ) Abaixo existe a aplicação para rodar e
 - - ```docker composer up ``` Se tudo ser certo a aplicação será configurada automáticamente pelo docker:
 - - Acesse a url **http://localhost:8080/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
 
-
-- ### **Usar a aplicação localmente para desenvolvimento sem docker:** ###
+### **02 - Usar a aplicação localmente para desenvolvimento sem docker:** ###
 
 - Será necessário criar um banco de dados relacional do tipo PosgresSQL
 - Para isso siga os seguintes comandos: 
@@ -35,10 +34,17 @@ docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PA
 - - Escolha a opção do menu esquerdo no simbolo de + para adicionar uma aplicação.
 - - Especifique o **JAVA 22** para a aplicação.
 - - E em seguida coloque o pacote da aplicação (**com.exosoft.amicred.AmicredApplication**) O Intellij busca autoático se clicar no botão.
-- - Em variáveis de ambiente coloque ( **APPLICATION_ENVIRONMENT=local;ENV_PATH=env;ENV_FILE=local** ) sem os parenteses.
+- - Em variáveis de ambiente coloque ( <span style="color: red;">**APPLICATION_ENVIRONMENT=local;ENV_PATH=env;ENV_FILE=local** </span>) sem os parenteses.
 - - Em **Work Directory** tenha certeza que está no diretório da aplicação clonada.
 - - Clique para executar a aplicação em modo ( **Debug** ) ou modo sem debug.
 - - Acesse a url **http://localhost:8083/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
+
+### **03 - Dicas de desenvolvimento (Comandos importantes)** ###
+- - Rodar migrations: Na raiz do projeto executar via cmd ou terminal o comando ```mvn flyway:migrate```
+- - Resetar migrações ou reparar migrações do banco de dados, via cmd ou terminal rodar o comando: ```mvn flyway:repair```
+- - Executar a instalação de dependencias do projeto dando skip dos testes, via cmd ou terminal rodar o comando: ``` mvn clean install -DskipTests```
+- - Recriar a imagem docker da aplicação, caso esteja rodando a aplicação no modo 01 ```docker compose up --build``` ou por qualquer outro motivo.
+
 
 
 
