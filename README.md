@@ -45,8 +45,47 @@ docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PA
 - - Executar a instalação de dependencias do projeto dando skip dos testes, via cmd ou terminal rodar o comando: ``` mvn clean install -DskipTests```
 - - Recriar a imagem docker da aplicação, caso esteja rodando a aplicação no modo 01 ```docker compose up --build``` ou por qualquer outro motivo.
 
+### **04 - Acessando e configurando o keycloak para funcionar a aplicação** ###
+- - Para acessar o keycloak use o url local http://localhost:8081 
+- - Para acessar o portal administrador use as credencias: 
+- - - Usuário: **admin**
+- - - Senha: **admin**
+- - - Crie um novo reaml, clicando logo abaixo do nome keycloak no canto superior esquerdo clique o droopdown e em seguida no botão <strong style="background-color: darkblue; color: #f0f0f0">Create Realm</strong>
+- - - de o nome de <strong>amicred-realm</strong>
+- - - Vá até Clients e crie um client e denome <strong>amicred-client-ext</strong>
+- - - Em <strong>Valid redirect URIs</strong> adicione as seguintes urls para que o keycloak tenha acesso a essas urls, sem isso ele não vai reconhecer a aplicação:
+- - - http://localhost:8083/secure-data-1
+- - - http://localhost:8083/secure-data-2
+- - - http://localhost:8083/swagger-ui/index.html
+- - - Aperte save e deixe todo o resto com a configuração padrão.
+- - - Vá agora em Users do amicred-realm e clique em <strong>Add User</strong> para acionar um novo usuário, adicione usuário e senha.
 
+### **05 - Recuperando o token do keycloak para ter acesso aos endpoints da aplicação:**
+- - Para ter acesso aos endpoints da aplicação, será necessário antes recuperar o bearer token, então tenha certeza que o seu keycloak está rodando e configurado com o amicred-realm e o client amicred-client-ext
+- - No meu caso eu criei um usuário de nome <strong>samucation</strong> com senha: <strong>123Mudar</strong> mas o código abaixo precisará da sua alteração nesses parametros caso você tenha mudado o nome do usuário ou senha ou do realm ou client.
+- - Use o CURL abaixo com as devidas alterações para recuperar o bearer token:
+```
+curl --location 'http://localhost:8081/realms/amicred-realm/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=amicred-client-ext' \
+--data-urlencode 'client_secret=admin' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'username=samucation' \
+--data-urlencode 'password=123Mudar' \
+--data-urlencode 'scope=openid offline_access profile'
+```
+Troque os valores do CURL em:
+- - data-urlencode username= <strong style="color:darkred">samucation</strong>
+- - data-urlencode username=samucation'> data-urlencode 'password= <strong style="color:darkred">123Mudar </strong>
+- - Por um valores válidos para você de usuário e senha que voce criou dentro do keycloak no seu realm.
 
+### **06 - Autenticando via keycloak** ###
+- - Após passar pelo passo 04 e 05 e obter o token válido do keycloak, use esse token para desbloquear o cadeado do swagger.
+- - Para isso acesse a url a seguir e em seguida coloque o token no cadeado a direita.
+- Com o token em mãos, acesse a uri do swagger: http://localhost:8083/swagger-ui/index.html
+- - No cadeado insira o valor recuperado em code e aperte autorize para liberar os endpoints bloqueados que só tem acesso via token.
+- - agora acesse os endpoints, caso o token expire, peça um novo token via CURL do passo 05.
 
-
+## **Keycloak notas bonus, Novos endpoins precisarão de configuração**
+- - Caso queira incluir novos endpoints será necessário na sessão client do Keycloak adicionar essas novas URLS, caso contrário o keycloak não terá acesso as urls e o sistema não funcionará.
 

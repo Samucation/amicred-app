@@ -45,11 +45,14 @@ ENV APPLICATION_ENVIRONMENT=local
 ENV ENV_FILE=docker
 ENV ENV_PATH=/app/env
 
+# Adiciona variáveis de ambiente do Keycloak
+ENV KEYCLOAK_URL=http://keycloak:8080
+ENV KEYCLOAK_REALM=amicred-realm
+
 # Exponha as portas para o aplicativo e para a depuração
 EXPOSE 8080
-EXPOSE 8081
 EXPOSE 8082
-EXPOSE 50
+EXPOSE 5005
 
 # Comando para iniciar a aplicação Spring Boot
 CMD ["java", "-jar", "/app/amicred-app-0.0.1-SNAPSHOT.war"]
