@@ -38,6 +38,9 @@ services:
       - "8081:8080"
     depends_on:
       - postgres
+    volumes:
+      - ./keycloak-init.sh:/opt/keycloak/keycloak-init.sh
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/keycloak-init.sh & /opt/keycloak/bin/kc.sh start-dev"]
 
   amicred-app:
     build: .

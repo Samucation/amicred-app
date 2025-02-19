@@ -2,7 +2,7 @@
 
 ## **Empresa: EXOSOFT**
 
-A aplicação está previamente configurada para rodar localmente como também via núvem e docker, para cada
+A aplicação está previamente configurada para rodar localmente e também via docker, para cada
 ambiente será necessário o manuseio e criação de algumas variáveis de ambiente, podendo ser que essas variáveis
 sejam criadas no próprio intellij "Em contextos aonde você está rodando local e sem dockerizar a aplicão
 ( contexto de desenvolvimento ) ou setando as enviroments diretamente no sistema operacional ou cloud que a aplicação
@@ -10,13 +10,17 @@ será executada. ( Modo de produção ) Abaixo existe a explicação de como rod
 
 ### **01 - Rodando a aplicação inteira via docker:** ###
 
-- Caso queira rodar a aplicação apenas para testes é possível rodar ele totalmente via docker, ou seja o banco de dados e a aplicação estarão dentro
-- de um container docker, nesses casos você precisará de poucos passos para rodar a aplicação.
-- - Com o docker instalado na sua máquina windows ou linux rodar o seguinte comando na raiz do projeto:
+- Caso queira rodar a aplicação apenas para testes é possível rodar ela totalmente via docker, ou seja o banco de dados e a aplicação estarão dentro
+- de um container docker assim como o keycloak, nesses casos você precisará de poucos passos para rodar a aplicação.
+- - Com o docker instalado na sua máquina windows ou linux execute os seguintes comandos na raiz do projeto:
 - - ```docker composer up ``` Se tudo ser certo a aplicação será configurada automáticamente pelo docker:
+- - mas antes de acessar a aplicação será necessário configurar o keycloak que subiu no docker para isso siga os passos **04 - Acessando e configurando o keycloak para funcionar a aplicação** para configurar o keycloak
+- - e o passo: **05 - Recuperando o token do keycloak para ter acesso aos endpoints da aplicação:** para saber como recuperar o Barer token da aplicação para usar no swagger, acesse o passo:
+- - **06 - Autenticando via keycloak** para saber como inserir o token na aplicação, após configurar o keycloak com os passos 04,05 e 06
 - - Acesse a url **http://localhost:8080/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
+- - você poderá usar a aplicação normalmente sem mais configurações, porém isso é um modo docker local, não tem muita serventia para desenvolvimento de backend apenas para consumo do frontend e testes.
 
-### **02 - Usar a aplicação localmente para desenvolvimento sem docker:** ###
+### **02 - Usar a aplicação localmente para desenvolvimento backend sem docker:** ###
 
 - Será necessário criar um banco de dados relacional do tipo PosgresSQL
 - Para isso siga os seguintes comandos: 
@@ -33,10 +37,15 @@ docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PA
 - - New configuration 
 - - Escolha a opção do menu esquerdo no simbolo de + para adicionar uma aplicação.
 - - Especifique o **JAVA 22** para a aplicação.
-- - E em seguida coloque o pacote da aplicação (**com.exosoft.amicred.AmicredApplication**) O Intellij busca autoático se clicar no botão.
+- - E em seguida coloque o pacote da aplicação (**com.exosoft.amicred.AmicredApplication**) O Intellij busca automático se clicar no botão.
 - - Em variáveis de ambiente coloque ( <span style="color: red;">**APPLICATION_ENVIRONMENT=local;ENV_PATH=env;ENV_FILE=local** </span>) sem os parenteses.
-- - Em **Work Directory** tenha certeza que está no diretório da aplicação clonada.
-- - Clique para executar a aplicação em modo ( **Debug** ) ou modo sem debug.
+- - Em **Work Directory** tenha certeza que está no diretório da aplicação.
+- - Caso não tenha ainda configurado o keycloak, será necessário configurar o keycloak caso não tenha ainda usado o comando docker-compose up na raiz do projeto via cmd 
+- - você precisará fazer para subir a imagem do keycloak, para saber como configurar o keycloak
+- - siga os passos **04 - Acessando e configurando o keycloak para funcionar a aplicação** para configurar o keycloak
+- - e o passo: **05 - Recuperando o token do keycloak para ter acesso aos endpoints da aplicação:** para saber como recuperar o Barer token da aplicação para usar no swagger, acesse o passo:
+- - **06 - Autenticando via keycloak** para saber como inserir o token na aplicação, após configurar o keycloak com os passos 04,05 e 06
+- - Agora com o keycloak configurado, clique em executar a aplicação em modo ( **Debug** ) ou modo sem debug, fica a sua escolha.
 - - Acesse a url **http://localhost:8083/swagger-ui/index.html#/user-controller/isServerLive** para saber se a aplicação está rodando.
 
 ### **03 - Dicas de desenvolvimento (Comandos importantes)** ###
@@ -46,18 +55,41 @@ docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PA
 - - Recriar a imagem docker da aplicação, caso esteja rodando a aplicação no modo 01 ```docker compose up --build``` ou por qualquer outro motivo.
 
 ### **04 - Acessando e configurando o keycloak para funcionar a aplicação** ###
-- - Para acessar o keycloak use o url local http://localhost:8081 
-- - Para acessar o portal administrador use as credencias: 
+- - Para acessar o keycloak use o url local http://localhost:8081 <strong style="color: darkred"> <strong>NOTA:</strong> O keycloak só estará na porta 8081 caso seja criado pelos comandos docker-compose up rodando na raiz da aplicação. </strong>
+- - nesse caso é importante entender que também a aplicação será criada e acessada pela porta 8080 ou seja usando o acesso da aplicação via docker a aplicação roda na porta 8080 já no modo dev mod a aplicação por default irá rodar na porta 8083
+- - cada tipo de ambiente precisa ser acessado em sua devida porta, os dois ambientes consomem o mesmo keycloak criado ao executar docker-compose up na raiz do projeto, não havendo a necessidade de criar dois keycloaks para acessar dev mod e docker mode.
+- - Para acessar o portal administrador do keycloak use as credencias: 
 - - - Usuário: **admin**
 - - - Senha: **admin**
 - - - Crie um novo reaml, clicando logo abaixo do nome keycloak no canto superior esquerdo clique o droopdown e em seguida no botão <strong style="background-color: darkblue; color: #f0f0f0">Create Realm</strong>
-- - - de o nome de <strong>amicred-realm</strong>
-- - - Vá até Clients e crie um client e denome <strong>amicred-client-ext</strong>
-- - - Em <strong>Valid redirect URIs</strong> adicione as seguintes urls para que o keycloak tenha acesso a essas urls, sem isso ele não vai reconhecer a aplicação:
+- - - de o nome de <strong style="darkred">amicred-realm</strong> 
+- - - Agora vá até <strong style="color: darkred">Clients</strong> e crie um novo client e em <strong style="color:blue">Client ID</strong> de nome de <strong style="color: darkgreen">amicred-client-ext</strong> e em <strong style="color:blue">Name</strong> de o nome de <strong style="color:darkgreen">amicred-client</strong> 
+- - - Mais abaixo ainda em client verifique se <strong>Always display in UI </strong> está como ON
+- - - Em <strong style="color: darkred">Valid redirect URIs</strong> adicione as seguintes urls para que o keycloak tenha acesso a essas urls, sem isso ele não vai reconhecer a aplicação:
 - - - http://localhost:8083/secure-data-1
 - - - http://localhost:8083/secure-data-2
 - - - http://localhost:8083/swagger-ui/index.html
+- - - Lembre-se que caso adicione um novo endpoint com um novo /nova-request ela precisará ser cadastrada em <strong style="color: darkred">Valid redirect URIs</strong> também!
+- - - Em <strong>Web origins</strong> verifique se o caminho está válido para a aplicação que irá rodar no caso nosso backend está rodando em: http://localhost:8083 mas adicione também http://localhost:8080 para funcionar na imagem docker
+- - - ou seja 8083 para modo dev mod e 8080 para modo apenas docker. adicione as duas em Web origins.
+- - - Em <strong style="color: darkred">Capability config</strong> verique se as seguintes configurações estão corretas:
+- - - <strong style="color: darkred">Client authentication</strong> <strong style="background-color:blue;color:white">ON</strong>
+- - - <strong style="backgrund-color: white;color:grey">Authorization deixe OFF</strong>
+- - - Em <strong style="color: darkred">Authentication flow</strong> deixe os seguintes valores como <strong style="background-color: white;color: blue">V</strong>
+- - - Standard flow: <strong style="background-color: white;color: blue">V</strong>
+- - - Direct access grants <strong style="background-color: white;color: blue">V</strong>
+- - - Service accounts roles: <strong style="background-color: white;color: blue">V</strong>
+- - - OAuth 2.0 Device Authorization Grant <strong style="background-color: white;color: blue">V</strong>
+- - - Logout settings -> Front channel logout: <strong style="background-color: white;color: blue">V</strong>
+- - - Backchannel logout session required <strong style="background-color: white;color: blue">V</strong>
+- - - Agora na aba <strong style="color:darkblue">Credentials</strong> adicione as seguintes configurações para credentials:
+- - - Em <strong style="color:darkgreen">Client Authenticator</strong> adicione o valor de <strong style="color:darkgreen">Clientid and Secret</strong>
+- - - Logo abaixo gere uma nova ou copie a <strong style="color:darkgreen">Client Secret</strong> você usará ela no passo **05 - Recuperando o token do keycloak para ter acesso aos endpoints da aplicação:** para
+- - - colocar no parametro client_secret ao buscar o token de autenticação da aplicação.
 - - - Aperte save e deixe todo o resto com a configuração padrão.
+- - - <strong style="color: darkred">NOTA: toda a configuração anterior foi feita em cima do realm amicred-realm, porém em algum momento foi trocado para o realm master e em Clients como master o nome do client ID do amicred-realm foi modificado de amicred-realm-realm para apenas amicred-realm
+- - - caso exista algum problema na configuração, considerar essa nota para ajuste no nome do realm que por default fica sempre realm-realm e foi trocado manualmente na master para Client ID amicred-realm em Clients </strong>
+
 - - - Vá agora em Users do amicred-realm e clique em <strong>Add User</strong> para acionar um novo usuário, adicione usuário e senha.
 
 ### **05 - Recuperando o token do keycloak para ter acesso aos endpoints da aplicação:**
@@ -75,14 +107,15 @@ curl --location 'http://localhost:8081/realms/amicred-realm/protocol/openid-conn
 --data-urlencode 'scope=openid offline_access profile'
 ```
 Troque os valores do CURL em:
-- - data-urlencode username= <strong style="color:darkred">samucation</strong>
-- - data-urlencode username=samucation'> data-urlencode 'password= <strong style="color:darkred">123Mudar </strong>
-- - Por um valores válidos para você de usuário e senha que voce criou dentro do keycloak no seu realm.
+- - username= <strong style="color:darkred">samucation</strong>
+- - password= <strong style="color:darkred">123Mudar</strong>
+- - client_secret=<strong style="color:darkred">admin</strong>
+- - Por um valores válidos para você de usuário e senha e secret anteriormente configurados no passo **04 - Acessando e configurando o keycloak para funcionar a aplicação**.
 
 ### **06 - Autenticando via keycloak** ###
 - - Após passar pelo passo 04 e 05 e obter o token válido do keycloak, use esse token para desbloquear o cadeado do swagger.
 - - Para isso acesse a url a seguir e em seguida coloque o token no cadeado a direita.
-- Com o token em mãos, acesse a uri do swagger: http://localhost:8083/swagger-ui/index.html
+- - Com o token em mãos, acesse a uri do swagger: http://localhost:8083/swagger-ui/index.html caso esteja em dev mod, ou http://localhost:8080/swagger-ui/index.html caso esteja em docker mod.
 - - No cadeado insira o valor recuperado em code e aperte autorize para liberar os endpoints bloqueados que só tem acesso via token.
 - - agora acesse os endpoints, caso o token expire, peça um novo token via CURL do passo 05.
 
