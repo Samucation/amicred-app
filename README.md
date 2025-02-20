@@ -3,10 +3,10 @@
 ## **Empresa: EXOSOFT**
 
 A aplicação está previamente configurada para rodar localmente e também via docker, para cada
-ambiente será necessário o manuseio e criação de algumas variáveis de ambiente, podendo ser que essas variáveis
-sejam criadas no próprio intellij "Em contextos aonde você está rodando local e sem dockerizar a aplicão
+ambiente será necessário o manuseio e criação de algumas variáveis de ambiente especificas que serão aboradas nesse documento
+podendo ser que essas variáveis sejam criadas no próprio intellij "Em contextos aonde você está rodando local e sem dockerizar a aplicão
 ( contexto de desenvolvimento ) ou setando as enviroments diretamente no sistema operacional ou cloud que a aplicação
-será executada. ( Modo de produção ) Abaixo existe a explicação de como rodar em todos os ambientes."
+será executada. ( Modo de produção ) Abaixo existe a explicação de como rodar a aplicação."
 
 ### **01 - Rodando a aplicação inteira via docker:** ###
 
@@ -22,13 +22,10 @@ será executada. ( Modo de produção ) Abaixo existe a explicação de como rod
 
 ### **02 - Usar a aplicação localmente para desenvolvimento backend sem docker:** ###
 
-- Será necessário criar um banco de dados relacional do tipo PosgresSQL
+- Execute o comando ```docker composer up``` para subir o keycloak e o banco de dados da aplicação, note que usamos a mesma imagem docker que no passo 01
+- porém aqui nós não iremos usar a aplicação de fato, apenas usaremos o keycloak e o banco de dados postgres, pois iremos rodar a aplicação a patir do intellij
+- e não a partir do target gerado e compilado para virar aplicação container do docker, após rodar o comando ```docker-compose up``` continue para o próximo passo.
 - Para isso siga os seguintes comandos: 
-
-- **Criar o banco de dados via docker no cmd ou terminal executar**
-```
-docker run -d -e POSTGRES_DB=amicred_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=amicred -p 5432:5432 --name postgres-amicred postgres
-```
 
 - **Inserindo variáveis de ambiente, definindo o ambiente local de desenvolvimento**
 - A aplicação sempre irá procurar no seu arquivo application.class ( **AmicredApplication** ) qual é o ambiente
